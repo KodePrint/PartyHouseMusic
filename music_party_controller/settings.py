@@ -36,6 +36,7 @@ THIRDS_APPS = [
 
 MY_APPS = [
     'api.apps.ApiConfig',
+    'frontend.apps.FrontendConfig',
 ]
 
 INSTALLED_APPS = [
