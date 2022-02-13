@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 const HomePage = (props) => {
     console.log(props)
     return (
-        <p>This the Home Page</p>
+        <p>This the Home Page Shit</p>
     );
 }
 
