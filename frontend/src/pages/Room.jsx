@@ -5,11 +5,15 @@ import { getRoom } from '../utils/api';
 
 const Room = (props) => {
     
+    const algo = () => {
+        console.log(props)
+     };
+     algo();
 
     // Obtenemos el parametro
     const param = useParams();
 
-    const theState = {
+    var theState = {
         guestCanPuese: "",
         votesToSkip: 2,
         isHost: ""
@@ -19,21 +23,24 @@ const Room = (props) => {
     
     const getData = async (e) => {
         const data = await getRoom(param.roomCode)
-        setState({
-            guestCanPuese: data.guest_can_pause,
-            votesToSkip: data.votes_to_skip,
-            isHost: data.is_host,
-        });
+        console.log(data.votes_to_skip)
+        return data
     }
+    getData();
+
 
     return (
         <div className="">
             <h3>{param.roomCode}</h3>
-            <p>Votes: {state.votesToSkip}</p>
-            <p>Guest Can Pause: {state.guestCanPuese.toString()}</p>
-            <p>Host: {state.isHost.toString()}</p>
+            <p>Votes: {getData.data.votes_to_skip}</p>
+            {/* <p>Guest Can Pause: {getData.data.guest_can_puese.toString()}</p> */}
+            {/* <p>Host: {getData.data.is_host.toString()}</p> */}
         </div>
     );
+}
+
+Room.defaultProps = {
+    porDefecto: "Algo XD"
 }
 
 export default Room;
