@@ -9,27 +9,20 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Link } from "react-router-dom"
+import { createRoom } from '../utils/api';
 
 
 const CreateRoomPage = (props) => {
     
-    const theState = {
-        guestCanPuese: true,
-        votesToSkip: 2,
-    };
-    
-    const [ state, setState ] = useState(theState)
-
-    const handleVotesChange = (e) => {
-        setState({
-            votesToSkip: e.target.value,
-        })
-    }
+    const [ canPause, setCanPause ] = useState(true)
+    const [ votes, setVotes ] = useState(2)
 
     const handleGuestCanPaueseChange = (e) => {
-        setState({
-            guestCanPuese: e.target.value
-        })
+        setCanPause(e.target.value)
+    }
+
+    const handleVotesChange = (e) => {
+        setVotes(e.target.value)
     }
 
     const handleRoomButtonPress = (e) => {
@@ -38,22 +31,18 @@ const CreateRoomPage = (props) => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                votes_to_skip: state.votesToSkip,
-                guest_can_pause: state.guestCanPuese
+                votes_to_skip: votes,
+                guest_can_pause: canPause
             }),
         };
-        fetch('/api/create-room', requestOptions)
-            .then((response) => response.json())
-            .then((data) => {
-                return window.location = `room/${data.code}`
-            });
+        createRoom(requestOptions)
     }
 
     return (
-        <Grid container spacing={1}>
+        <Grid container spacing={1} className="center">
             <Grid item xs={12} align="center">
                 <Typography component="h4" variant="h4">
-                    Create Rom
+                    Create A Room
                 </Typography>
             </Grid>
             <Grid item xs={12} align="center">
@@ -85,7 +74,7 @@ const CreateRoomPage = (props) => {
                             required={true}
                             type="number"
                             onChange={handleVotesChange}
-                            defaultValue={1}
+                            defaultValue={2}
                             inputProps={{
                                 min: 1,
                                 style: {textAlign: "center"}
