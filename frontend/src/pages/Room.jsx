@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getRoom, leaveRoom } from '../utils/api';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Navigate, Route } from 'react-router-dom';
 import { TextField, Button, Grid, Typography, ButtonGroup } from '@material-ui/core';
 
 
@@ -19,9 +19,13 @@ const Room = (props) => {
     useEffect(() => {
         getRoom(param.roomCode)
         .then(res => {
-            setVotes(res.votes_to_skip);
-            setCanPause(res.guest_can_pause);
-            setIsHost(res.is_host);
+            if (res["Room Not Found"]) {
+                return window.location.href = '/'
+            } else {
+                setVotes(res.votes_to_skip);
+                setCanPause(res.guest_can_pause);
+                setIsHost(res.is_host);
+            }
         })
     }, [])
 

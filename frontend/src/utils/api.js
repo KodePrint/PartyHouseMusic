@@ -55,7 +55,8 @@ export const userInRoom = async (code) => {
         await fetch(url)
             .then((response) => response.json())
             .then((data) => {
-                return window.location.href =`room/${data.code}`
+                console.log(data)
+                data.code === null ? console.log(data) : window.location.href =`room/${data.code}`
             })
     } catch(err) {
         console.error(err.message)
@@ -69,7 +70,7 @@ export const leaveRoom = async(body) => {
         await fetch(url, body)
             .then((response) => {
                 console.log(response)
-                // return window.location.href =`/`
+                return window.location.href =`/`
             })
     } catch(err) {
         console.error(err.message)

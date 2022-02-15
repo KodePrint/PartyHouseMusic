@@ -7,7 +7,6 @@ import { userInRoom } from '../utils/api';
 
 
 const HomePage = (props) => {
-    console.log(props)
 
     const [roomCode, setRoomCOde ] = useState("")
 
