@@ -8,17 +8,19 @@ import FormControl from '@material-ui/core/FormControl';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import { createRoom, getRoom } from '../utils/api';
-import { param, votes, canPause } from './Room';
+import Room, { param, votes, canPause } from './Room';
 
 const UpdateRoom = (props) => {
-    const {roomCode} = props;
-    const {guestCanPause} = props;
-    const {lastVotes} = props; 
-    const {settings} = props; 
 
-    console.log(props)
+    const navigate = useNavigate()
+
+    // Obtenemos el parametro
+    const param = useParams();
+
+    const [votes, setVotes] = useState()
+    const [canPause, setCanPause] = useState()
 
     const handleGuestCanPaueseChange = (e) => {
         setCanPause(e.target.value)
@@ -40,12 +42,16 @@ const UpdateRoom = (props) => {
         };
         createRoom(requestOptions)
     }
-    
+
+    const returnToRoom = () => {
+        navigate(`/room/${param.roomCode}`)
+    }
+
     return (
         <div className="center">
             <Grid item xs={12} align="center">
                 <Typography component="h4" variant="h4">
-                    {`Update A Room ${roomCode}`}
+                    {`Update A Room ${param.roomCode}`}
                 </Typography>
             </Grid>
             <Grid item xs={12} align="center">
@@ -55,7 +61,7 @@ const UpdateRoom = (props) => {
                     </FormHelperText>
                     <RadioGroup 
                         row 
-                        defaultValue={guestCanPause.toString()}
+                        defaultValue={setCanPause.toString()}
                         onChange={handleGuestCanPaueseChange}>
                         <FormControlLabel value="true" 
                             control={<Radio color="primary" />}
@@ -77,7 +83,7 @@ const UpdateRoom = (props) => {
                             required={true}
                             type="number"
                             onChange={handleVotesChange}
-                            defaultValue={lastVotes}
+                            defaultValue={votes}
                             inputProps={{
                                 min: 1,
                                 style: {textAlign: "center"}
@@ -98,10 +104,8 @@ const UpdateRoom = (props) => {
                     <Button
                         color='secondary'
                         variant='contained'
-                        to={`/room/${roomCode}`}
-                        component={Link}
+                        onClick={returnToRoom}
                         >
-                        
                         Close
                     </Button>
                 </Grid>

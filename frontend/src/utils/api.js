@@ -18,11 +18,11 @@ export const createRoom = async (body) => {
     }
 }
 
+
 // Obtener informacion de la habitacion
 export const getRoom = async (code) => {
     try { 
         let url = `${BASE_URL}get-room?code=${code}`
-        console.log(url)
         const response = await fetch(url);
         const data = await response.json();
         return data;
@@ -31,7 +31,7 @@ export const getRoom = async (code) => {
     }
 }
 
-// Unirce a una habitacion
+// Unirse a una habitacion
 export const joinRoom = async(body, roomCode, error) => {
     try{
         let url = `${BASE_URL}join-room`
@@ -55,7 +55,6 @@ export const userInRoom = async (code) => {
         await fetch(url)
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
                 data.code === null ? console.log(data) : window.location.href =`room/${data.code}`
             })
     } catch(err) {
@@ -69,7 +68,6 @@ export const leaveRoom = async(body) => {
         let url = `${BASE_URL}leave-room`
         await fetch(url, body)
             .then((response) => {
-                console.log(response)
                 return window.location.href =`/`
             })
     } catch(err) {

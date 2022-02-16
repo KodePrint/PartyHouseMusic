@@ -17,7 +17,7 @@ const App = (props) => {
                 <Route exact path="/" element={<HomePage/>} />
                 <Route exact path="/create" element={<CreateRoomPage/>} />
                 <Route path="/room/:roomCode" element={<Room/>} />
-                <Route path="/update/:roomCode" element={<UpdateRoom/>} />
+                <Route path="/update/:roomCode" element={<UpdateRoom />} />
                 <Route path="/join" element={<RoomJoinPage/>} />
                 <Route path="*" element={<span>Ups... Page no found Error 404</span>} />
             </Routes>

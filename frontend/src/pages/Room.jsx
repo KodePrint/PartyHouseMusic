@@ -10,6 +10,7 @@ import UpdateRoom from './UpdateRoom';
 
 const Room = (props) => {
 
+
     const navigate = useNavigate()
 
     // Obtenemos el parametro
@@ -18,7 +19,6 @@ const Room = (props) => {
     const [votes, setVotes] = useState('');
     const [canPause, setCanPause] = useState(false);
     const [isHost, setIsHost] = useState(false);
-    const [settings, setSettings] = useState(false)
 
     // Obtenemos los datos del ROOM
     useEffect(() => {
@@ -43,13 +43,16 @@ const Room = (props) => {
         leaveRoom(requestOptions)
     }
     
-    // Actualiza el valor de updateSettings
+    // Llamamos a la funcion de settings
     const updateSettings = () => {
-        if (settings) {
-            setSettings(false)
-        } else {
-            setSettings(true)
-        }
+        return navigate(
+            `/update/${param.roomCode}`, {
+                state: {
+                    lastVotes:votes,
+                    lastCanPause: canPause
+                }
+            }
+        )
     }
 
     // Renderisamos el botton Settings si es host
@@ -77,14 +80,7 @@ const Room = (props) => {
         )
     }
 
-    if (settings) {
-        return <UpdateRoom 
-            roomCode={param.roomCode}
-            lastVotes={votes}
-            guestCanPause={canPause}
-            settings={true}
-        />
-    }
+    // Retorna el los datos del ROOM
     return (
         <Grid container spacing={1} className="center">
             <Grid item xs={12} align="center">
