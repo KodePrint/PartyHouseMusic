@@ -3,11 +3,14 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getRoom, leaveRoom } from '../utils/api';
-import { Link, Navigate, Route } from 'react-router-dom';
+import { Link, useNavigate, Route } from 'react-router-dom';
 import { TextField, Button, Grid, Typography, ButtonGroup } from '@material-ui/core';
+import UpdateRoom from './UpdateRoom';
 
 
 const Room = (props) => {
+
+    const navigate = useNavigate()
 
     // Obtenemos el parametro
     const param = useParams();
@@ -15,7 +18,9 @@ const Room = (props) => {
     const [votes, setVotes] = useState('');
     const [canPause, setCanPause] = useState(false);
     const [isHost, setIsHost] = useState(false);
+    const [settings, setSettings] = useState(false)
 
+    // Obtenemos los datos del ROOM
     useEffect(() => {
         getRoom(param.roomCode)
         .then(res => {
@@ -29,6 +34,7 @@ const Room = (props) => {
         })
     }, [])
 
+    // Salimos y eliminamos el room
     const leaveButtonPress = (e) => {
         const requestOptions = {
             method: "POST",
@@ -36,12 +42,54 @@ const Room = (props) => {
         };
         leaveRoom(requestOptions)
     }
+    
+    // Actualiza el valor de updateSettings
+    const updateSettings = () => {
+        if (settings) {
+            setSettings(false)
+        } else {
+            setSettings(true)
+        }
+    }
 
+    // Renderisamos el botton Settings si es host
+    const SettingsBtn = () => {
+        return (
+            <Grid item xs={12} align="center">
+                <Button 
+                    variant='contained' 
+                    color='primary'
+                    onClick={updateSettings}
+                    >
+                        Settings
+                </Button>
+            </Grid>
+        );
+    }
+
+    // Renderizamos los campos para actualizar
+    const RenderSettings = () => {
+        return (
+            <div className="center">
+                Hola Mami
+                <span>Room: {param.roomCode}</span>
+            </div>
+        )
+    }
+
+    if (settings) {
+        return <UpdateRoom 
+            roomCode={param.roomCode}
+            lastVotes={votes}
+            guestCanPause={canPause}
+            settings={true}
+        />
+    }
     return (
         <Grid container spacing={1} className="center">
             <Grid item xs={12} align="center">
                 <Typography variant='h4' component='h4'>
-                    Code: {param.roomCode}
+                    Room Code: {param.roomCode}
                 </Typography>
             </Grid>
             <Grid item xs={12} align="center">
@@ -59,6 +107,7 @@ const Room = (props) => {
                     Host: {isHost.toString()}
                 </Typography>
             </Grid>
+            { isHost ? (<SettingsBtn/>) : null}
             <Grid item xs={12} align="center">
                 <Button 
                     variant='contained' 
@@ -70,12 +119,6 @@ const Room = (props) => {
                 </Button>
             </Grid>
         </Grid>
-        // <div className="center">
-        //     <h3>{param.roomCode}</h3>
-        //     <p>Votes: {votes}</p>
-        //     <p>Guest Can Pause: {canPause.toString()}</p>
-        //     <p>Host: {isHost.toString()}</p>
-        // </div>
     );
 }
 

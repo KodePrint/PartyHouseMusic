@@ -18,7 +18,15 @@ const HomePage = (props) => {
         <Grid container spacing={3} className="center">
             <Grid item xs={12} align="center">
                 <Typography variant='h3' compact='h3'>
-                    🎶 House Music Party 🎉🎈
+                    <span>
+                        🎶
+                    </span>
+                    <span>
+                        🔉
+                    </span> 
+                        House Music Party 
+                    <span>🎉</span>
+                    <span>🎈</span>
                 </Typography>
             </Grid>
             <Grid item xs={12} align="center">

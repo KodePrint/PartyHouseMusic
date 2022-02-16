@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -8,14 +8,17 @@ import FormControl from '@material-ui/core/FormControl';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { Link } from "react-router-dom"
-import { createRoom } from '../utils/api';
+import { Link, useParams } from "react-router-dom"
+import { createRoom, getRoom } from '../utils/api';
+import { param, votes, canPause } from './Room';
 
+const UpdateRoom = (props) => {
+    const {roomCode} = props;
+    const {guestCanPause} = props;
+    const {lastVotes} = props; 
+    const {settings} = props; 
 
-const CreateRoomPage = (props) => {
-    
-    const [ canPause, setCanPause ] = useState(true)
-    const [ votes, setVotes ] = useState(2)
+    console.log(props)
 
     const handleGuestCanPaueseChange = (e) => {
         setCanPause(e.target.value)
@@ -37,12 +40,12 @@ const CreateRoomPage = (props) => {
         };
         createRoom(requestOptions)
     }
-
+    
     return (
-        <Grid container spacing={1} className="center">
+        <div className="center">
             <Grid item xs={12} align="center">
                 <Typography component="h4" variant="h4">
-                    Create A Room
+                    {`Update A Room ${roomCode}`}
                 </Typography>
             </Grid>
             <Grid item xs={12} align="center">
@@ -52,7 +55,7 @@ const CreateRoomPage = (props) => {
                     </FormHelperText>
                     <RadioGroup 
                         row 
-                        defaultValue="true"
+                        defaultValue={guestCanPause.toString()}
                         onChange={handleGuestCanPaueseChange}>
                         <FormControlLabel value="true" 
                             control={<Radio color="primary" />}
@@ -74,7 +77,7 @@ const CreateRoomPage = (props) => {
                             required={true}
                             type="number"
                             onChange={handleVotesChange}
-                            defaultValue={votes}
+                            defaultValue={lastVotes}
                             inputProps={{
                                 min: 1,
                                 style: {textAlign: "center"}
@@ -90,21 +93,21 @@ const CreateRoomPage = (props) => {
                         color='primary'
                         variant='contained'
                         onClick={handleRoomButtonPress}>
-                        Create A Room
+                        Save
                     </Button>
-                </Grid>
-                <Grid item xs={12} align="center">
                     <Button
                         color='secondary'
                         variant='contained'
-                        to="/"
-                        component={Link}>
-                        Back
+                        to={`/room/${roomCode}`}
+                        component={Link}
+                        >
+                        
+                        Close
                     </Button>
                 </Grid>
             </Grid>
-        </Grid>
+        </div>
     );
 }
 
-export default CreateRoomPage;
+export default UpdateRoom;
