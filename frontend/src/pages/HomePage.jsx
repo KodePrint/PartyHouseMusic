@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextField, Button, Grid, Typography, ButtonGroup } from '@material-ui/core';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { userInRoom } from '../utils/api';
@@ -11,7 +11,7 @@ const HomePage = (props) => {
     const [roomCode, setRoomCOde ] = useState("")
 
     useEffect(()=> {
-        userInRoom(setRoomCOde)
+        userInRoom()
     },[])
 
     return (

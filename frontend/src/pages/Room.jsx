@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import { getRoom, leaveRoom } from '../utils/api';
 import { Link, useNavigate, Route } from 'react-router-dom';
 import { TextField, Button, Grid, Typography, ButtonGroup } from '@material-ui/core';
-import UpdateRoom from './UpdateRoom';
 
 
 const Room = (props) => {
@@ -19,6 +18,7 @@ const Room = (props) => {
     const [votes, setVotes] = useState('');
     const [canPause, setCanPause] = useState(false);
     const [isHost, setIsHost] = useState(false);
+    const [spotifyAuth, setSpotifyAuth] = useState(false);
 
     // Obtenemos los datos del ROOM
     useEffect(() => {
@@ -34,6 +34,22 @@ const Room = (props) => {
         })
     }, [])
 
+    const authenticateSpotify = () => {
+        fetch('/spotify/is-authenticated')
+            .then(response => response.json())
+            .then(data => {
+                setSpotifyAuth(data.status)
+                console.log(data.status)
+                if (!data.status) {
+                    fetch('/spotify/get-auth-url')
+                        .then(res => res.json())
+                        .then(data => {
+                            window.location.replace(data.url)
+                        })
+                }
+            })
+    }
+
     // Salimos y eliminamos el room
     const leaveButtonPress = (e) => {
         const requestOptions = {
@@ -46,10 +62,12 @@ const Room = (props) => {
     // Llamamos a la funcion de settings
     const updateSettings = () => {
         return navigate(
-            `/update/${param.roomCode}`, {
+            `/create`, {
                 state: {
                     lastVotes:votes,
-                    lastCanPause: canPause
+                    lastCanPause: canPause,
+                    update:true,
+                    room: param.roomCode
                 }
             }
         )
@@ -68,16 +86,6 @@ const Room = (props) => {
                 </Button>
             </Grid>
         );
-    }
-
-    // Renderizamos los campos para actualizar
-    const RenderSettings = () => {
-        return (
-            <div className="center">
-                Hola Mami
-                <span>Room: {param.roomCode}</span>
-            </div>
-        )
     }
 
     // Retorna el los datos del ROOM

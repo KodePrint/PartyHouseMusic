@@ -1,5 +1,6 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route, Redirect } from 'react-router-dom';
+// import {  } from 'react-router-dom';
+
 
 const BASE_URL = 'http://127.0.0.1:8000/api/'
 
@@ -11,8 +12,20 @@ export const createRoom = async (body) => {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data)
-                return window.location.href = `room/${data.code}`
+                //return navigate(`/room/${data.code}`)
+                return window.location.href = `/room/${data.code}`
             })
+    } catch(err) {
+        console.error(err.message)
+    }
+}
+
+// Actualizar una nueva habitacion
+export const updateRoom = (body) => {
+    try {
+        let url = `${BASE_URL}update-room`
+        const response = fetch(url, body)
+        return response
     } catch(err) {
         console.error(err.message)
     }
@@ -38,7 +51,7 @@ export const joinRoom = async(body, roomCode, error) => {
         await fetch(url, body)
             .then((response) => {
                 if (response.ok) {
-                    return window.location.href = `room/${roomCode}`
+                    return window.location.href = `/room/${roomCode}`
                 } else {
                     error('Room not found..!')
                 }
@@ -55,7 +68,7 @@ export const userInRoom = async (code) => {
         await fetch(url)
             .then((response) => response.json())
             .then((data) => {
-                data.code === null ? console.log(data) : window.location.href =`room/${data.code}`
+                data.code === null ? console.log(data) : window.location.href =`/room/${data.code}`
             })
     } catch(err) {
         console.error(err.message)
