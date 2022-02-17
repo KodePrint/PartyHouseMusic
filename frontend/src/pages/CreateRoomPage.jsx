@@ -24,7 +24,6 @@ const CreateRoomPage = (props) => {
             "update": false,
             "room": ""
         }
-        console.log(location)
     }
     const update = location.state.update
 

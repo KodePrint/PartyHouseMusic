@@ -25,11 +25,21 @@ const Room = (props) => {
         getRoom(param.roomCode)
         .then(res => {
             if (res["Room Not Found"]) {
-                return window.location.href = '/'
+                navigate('/', {
+                    state: {
+                        room: "Not found",
+                        state: false
+                        }
+                    }
+                )
             } else {
                 setVotes(res.votes_to_skip);
                 setCanPause(res.guest_can_pause);
                 setIsHost(res.is_host);
+                if (res.is_host) {
+                    console.log('ir a spotify')
+                    authenticateSpotify()
+                }
             }
         })
     }, [])
@@ -38,8 +48,8 @@ const Room = (props) => {
         fetch('/spotify/is-authenticated')
             .then(response => response.json())
             .then(data => {
-                setSpotifyAuth(data.status)
                 console.log(data.status)
+                setSpotifyAuth(data.status)
                 if (!data.status) {
                     fetch('/spotify/get-auth-url')
                         .then(res => res.json())

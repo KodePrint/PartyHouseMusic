@@ -62,14 +62,18 @@ export const joinRoom = async(body, roomCode, error) => {
 }
 
 // User in Room 
-export const userInRoom = async (code) => {
+export const userInRoom = async () => {
     try {
         let url = `${BASE_URL}user-in-room`
-        await fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-                data.code === null ? console.log(data) : window.location.href =`/room/${data.code}`
-            })
+        const response = await fetch(url)
+        const data = await response.json()
+        return data
+
+        // await fetch(url)
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //         data.code === null ? data : window.location.href =`/room/${data.code}`
+        //     })
     } catch(err) {
         console.error(err.message)
     }

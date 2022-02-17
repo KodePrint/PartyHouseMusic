@@ -1,11 +1,13 @@
-from urllib import response
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, redirect
 from .credentials import REDIRECT_URI, CLIENT_ID, CLIENT_SECRET
 from rest_framework.views import APIView
 from requests import Request, post
 from rest_framework import status
+from api.models import Room
 from rest_framework.response import Response
-from .util import update_or_create_user_tokens, is_spotify_authenticated
+from .util import update_or_create_user_tokens, is_spotify_authenticated, \
+    execute_spotify_api_request
 # Create your views here.
 
 class AuthURL(APIView):
@@ -23,10 +25,11 @@ class AuthURL(APIView):
 
 
 def spotify_callback(request, format=None):
+    success_url = reverse_lazy('home')
     code = request.GET.get('code')
     error = request.GET.get('error')
 
-    response = post('https://accounts.spotify.com/api/com/token', data={
+    response = post('https://accounts.spotify.com/api/token', data={
         'grant_type': 'authorization_code',
         'code': code,
         'redirect_uri': REDIRECT_URI,
@@ -34,7 +37,7 @@ def spotify_callback(request, format=None):
         'client_secret': CLIENT_SECRET
     }).json()
 
-    access_token = response.get('acces_token')
+    access_token = response.get('access_token')
     token_type = response.get('token_type')
     refresh_toke = response.get('refresh_token')
     expires_in = response.get('expires_in')
@@ -51,10 +54,27 @@ def spotify_callback(request, format=None):
         refresh_toke,
         )
 
-    return redirect('frontend:')
-
+    return redirect('frontend:home')
+ 
 
 class IsAuthenticated(APIView):
     def get(self, request, format=None):
-        is_authenticated = is_spotify_authenticated(self.request.session.session_key)
-        return Response({'status':'is_authenticated'}, status=status.HTTP_200_OK)
+        is_authenticated = is_spotify_authenticated(
+            self.request.session.session_key
+            )
+        return Response({'status':is_authenticated}, status=status.HTTP_200_OK)
+
+class CurrentSong(APIView):
+    def get(self, request, format=None):
+        room_code = self.request.session.get('room_code')
+        room = Room.objects.filter(code=room_code)
+        if room.exists():
+            room = room[0]
+        else:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+        host = room.host
+        
+        endpoint = "/player/currently-playing"
+        response = execute_spotify_api_request(host, endpoint)
+
+        return Response(response, status=status.HTTP_200_OK)

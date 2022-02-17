@@ -1,16 +1,25 @@
 import React from 'react';
 import { TextField, Button, Grid, Typography, ButtonGroup } from '@material-ui/core';
-import { Link, Routes, Route } from 'react-router-dom';
+import { Link, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { userInRoom } from '../utils/api';
 
 
 const HomePage = (props) => {
-
+    
+    const location = useLocation()
+    const navigate = useNavigate()
+    
     const [roomCode, setRoomCOde ] = useState("")
 
     useEffect(()=> {
+        userInRoom()
+            .then(res => {
+                if (res.code) {
+                    navigate(`/room/${res.code}`)
+                }
+            })
         userInRoom()
     },[])
 

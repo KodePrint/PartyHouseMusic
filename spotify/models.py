@@ -9,6 +9,6 @@ class SpotifyToken(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     refresh_token = models.CharField(max_length=150)
     access_token = models.CharField(max_length=150)
-    expire_in = models.DateTimeField()
+    expires_in = models.DateTimeField()
     token_type = models.CharField(max_length=50)
     
