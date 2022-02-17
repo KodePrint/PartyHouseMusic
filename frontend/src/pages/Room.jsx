@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getRoom, leaveRoom } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
-import { Button, Grid, Typography, CircularProgress } from '@material-ui/core';
+import { Button, Card, Grid, Typography, CircularProgress } from '@material-ui/core';
 import { getCurrentSong } from '../utils/spotify';
 import MusicPlayer from '../components/MusicPlayer';
 import { css } from '@emotion/react';
@@ -29,6 +29,7 @@ const Room = (props) => {
     const [spotifyAuth, setSpotifyAuth] = useState(false);
     const [song, setSong] = useState({});
     const [loading, setLoading] = useState(true);
+    const [playing, setPlaying] = useState(true);
 
     // Obtenemos los datos del ROOM
     useEffect(() => {
@@ -96,7 +97,13 @@ const Room = (props) => {
     const getSong = () => {
         getCurrentSong()
             .then(data => {
-                setSong(data)
+                if (!data.playing) {
+                    setPlaying(false)
+                }
+                if (data.is_playing) {
+                    setSong(data)
+                    setPlaying(true)
+                }
                 setLoading(false)
             })
     }
@@ -124,6 +131,25 @@ const Room = (props) => {
         )
     }
 
+    const PlaySpotifyLink = () => {
+        return (
+            <Card>
+                <div className="spotify_content">
+                    <Typography component="h6" variant="h6">
+                        Play a song in Spotify
+                    </Typography>
+                    <a href='https://open.spotify.com/' target="_blank">
+                        <img 
+                            src="https://cdn-icons-png.flaticon.com/512/174/174872.png" 
+                            alt="Spotify"
+                            className='spotify_img' 
+                        />
+                    </a>
+                </div>
+            </Card>
+        )
+    }
+
     // Retorna el los datos del ROOM
     return (
         <Grid container spacing={1} className="center" justifyContent='center'>
@@ -134,7 +160,9 @@ const Room = (props) => {
             </Grid>
             {loading 
             ? (<CircularProgress />) 
-            : (<MusicPlayer {...song}/>) }
+            : ( !playing 
+                ? (<PlaySpotifyLink/>)
+                :(<MusicPlayer {...song}/>)) }
             {/* <Grid item xs={12} align="center">
                 <Typography variant='h6' component='h6'>
                     Votes: {votes}

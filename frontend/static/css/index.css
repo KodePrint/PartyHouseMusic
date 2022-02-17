@@ -34,3 +34,13 @@ body {
   transition: .3s all ease;
   margin: 5px 0;
 }
+.spotify_content{
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.spotify_img {
+  max-width: 100px;
+  padding: 5px;
+}

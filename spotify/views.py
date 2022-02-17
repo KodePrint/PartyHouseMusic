@@ -8,7 +8,7 @@ from rest_framework import status
 from api.models import Room
 from rest_framework.response import Response
 from .util import update_or_create_user_tokens, is_spotify_authenticated, \
-    execute_spotify_api_request
+    execute_spotify_api_request, skip_song
 # Create your views here.
 
 class AuthURL(APIView):
@@ -78,7 +78,7 @@ class CurrentSong(APIView):
         response = execute_spotify_api_request(host, endpoint)
 
         if 'error' in response or 'item' not in response:
-            return Response({'msg':'hasta aqui llego'}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'error':'The spotify not playing'}, status=status.HTTP_204_NO_CONTENT)
         
         item = response.get('item')
         duration = item.get('duration_ms')
@@ -107,3 +107,17 @@ class CurrentSong(APIView):
         }
 
         return Response(song, status=status.HTTP_200_OK)
+
+
+class SkipSong(APIView):
+    def post(self, request, format=None):
+        room_code = self.request.session.get('room_code')
+        room = Room.objects.filter(code=room_code)[0]
+
+        if self.request.session.session_key == room.host:
+            print("ejecuta util SKIP song")
+            skip_song(room.host)
+        else:
+            pass
+
+        return Response({}, status=status.HTTP_204_NO_CONTENT)

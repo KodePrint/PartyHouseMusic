@@ -4,11 +4,21 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { nextSong } from '../utils/spotify';
 
 const MusicPlayer = (props) => {
 
-    // const [] = useState(false)
     const sonProgress = (props.time / props.duration) * 100;
+
+    const skipSong = () => {
+        const requestOptions = {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+        };
+        nextSong(requestOptions)
+    }
+    
 
     return (
         <Card className='musicPlayer'>
@@ -29,7 +39,9 @@ const MusicPlayer = (props) => {
                                 ? (<PauseCircleOutlineIcon/>) 
                                 : (<PlayCircleOutlineIcon/>)}
                         </IconButton>
-                        <IconButton>
+                        <IconButton
+                            onClick={skipSong}
+                        >
                             <SkipNextIcon/>
                         </IconButton>
                     </div>
