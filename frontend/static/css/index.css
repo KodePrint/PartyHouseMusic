@@ -30,3 +30,7 @@ body {
   justify-content: center;
   width: 100%;
 }
+.musicPlayer {
+  transition: .3s all ease;
+  margin: 5px 0;
+}

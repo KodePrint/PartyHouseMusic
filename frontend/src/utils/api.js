@@ -11,7 +11,6 @@ export const createRoom = async (body) => {
         await fetch(url, body)
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
                 //return navigate(`/room/${data.code}`)
                 return window.location.href = `/room/${data.code}`
             })

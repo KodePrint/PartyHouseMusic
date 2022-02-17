@@ -3,12 +3,20 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getRoom, leaveRoom } from '../utils/api';
-import { Link, useNavigate, Route } from 'react-router-dom';
-import { TextField, Button, Grid, Typography, ButtonGroup } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom';
+import { Button, Grid, Typography, CircularProgress } from '@material-ui/core';
+import { getCurrentSong } from '../utils/spotify';
+import MusicPlayer from '../components/MusicPlayer';
+import { css } from '@emotion/react';
 
 
 const Room = (props) => {
 
+    const override = css `
+        display: block;
+        margin: 0 auto;
+        border-color: red;
+    `
 
     const navigate = useNavigate()
 
@@ -19,6 +27,8 @@ const Room = (props) => {
     const [canPause, setCanPause] = useState(false);
     const [isHost, setIsHost] = useState(false);
     const [spotifyAuth, setSpotifyAuth] = useState(false);
+    const [song, setSong] = useState({});
+    const [loading, setLoading] = useState(true);
 
     // Obtenemos los datos del ROOM
     useEffect(() => {
@@ -37,18 +47,18 @@ const Room = (props) => {
                 setCanPause(res.guest_can_pause);
                 setIsHost(res.is_host);
                 if (res.is_host) {
-                    console.log('ir a spotify')
                     authenticateSpotify()
                 }
             }
         })
+        // getSong()
+        componentDidMount()
     }, [])
 
     const authenticateSpotify = () => {
         fetch('/spotify/is-authenticated')
             .then(response => response.json())
             .then(data => {
-                console.log(data.status)
                 setSpotifyAuth(data.status)
                 if (!data.status) {
                     fetch('/spotify/get-auth-url')
@@ -83,6 +93,14 @@ const Room = (props) => {
         )
     }
 
+    const getSong = () => {
+        getCurrentSong()
+            .then(data => {
+                setSong(data)
+                setLoading(false)
+            })
+    }
+
     // Renderisamos el botton Settings si es host
     const SettingsBtn = () => {
         return (
@@ -98,15 +116,26 @@ const Room = (props) => {
         );
     }
 
+    const componentDidMount = () => {
+        const interval = setInterval(
+            () => {
+                getSong()
+            }, 1000
+        )
+    }
+
     // Retorna el los datos del ROOM
     return (
-        <Grid container spacing={1} className="center">
+        <Grid container spacing={1} className="center" justifyContent='center'>
             <Grid item xs={12} align="center">
                 <Typography variant='h4' component='h4'>
                     Room Code: {param.roomCode}
                 </Typography>
             </Grid>
-            <Grid item xs={12} align="center">
+            {loading 
+            ? (<CircularProgress />) 
+            : (<MusicPlayer {...song}/>) }
+            {/* <Grid item xs={12} align="center">
                 <Typography variant='h6' component='h6'>
                     Votes: {votes}
                 </Typography>
@@ -120,7 +149,8 @@ const Room = (props) => {
                 <Typography variant='h6' component='h6'>
                     Host: {isHost.toString()}
                 </Typography>
-            </Grid>
+            </Grid> */}
+            
             { isHost ? (<SettingsBtn/>) : null}
             <Grid item xs={12} align="center">
                 <Button 
